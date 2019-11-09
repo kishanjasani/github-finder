@@ -14,6 +14,7 @@ class App extends Component {
   state = {
     users: [],
     user: {},
+    repos: [],
     loading: false,
     alert: null
   }
@@ -34,6 +35,15 @@ class App extends Component {
     const res = await axios.get(`https://api.github.com/users/${username}`);
 
     this.setState({ user: res.data, loading: false });
+  }
+
+  // Get User repos
+  getUserRepos = async (username) => {
+    this.setState({ loading: true });
+
+    const res = await axios.get(`https://api.github.com/users/${username}/repos?per_page=5&sort=created:asc`);
+
+    this.setState({ repos: res.data, loading: false });
   }
 
   clearUsers = () => {
@@ -75,7 +85,13 @@ class App extends Component {
               <Route exact path='/about' component={About} />
               <Route exact path='/user/:login' render={
                 props => (
-                  <User { ...props } getUser={ this.getUser } user={ this.state.user } loading={ this.state.loading } />
+                  <User
+                    { ...props }
+                    getUser={ this.getUser }
+                    user={ this.state.user }
+                    getUserRepos={this.getUserRepos}
+                    repos={ this.state.repos }
+                    loading={ this.state.loading } />
                 )}
               />
             </Switch>
