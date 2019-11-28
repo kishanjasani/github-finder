@@ -13,8 +13,6 @@ import GithubState from './context/github/GithubState';
 import './App.css';
 
 const App = () => {
-  const [users, setUsers] = useState([]);
-  const [user, setUser] = useState({});
   const [repos, setRepos] = useState([]);
   const [loading, setLoading] = useState(false);
   const [alert, setAlert] = useState(null);
@@ -23,14 +21,7 @@ const App = () => {
 
 
   // Get Single github user
-  const getUser = async (username) => {
-    setLoading(true);
 
-    const res = await axios.get(`https://api.github.com/users/${username}`);
-
-    setUser(res.data);
-    setLoading(false);
-  }
 
   // Get User repos
   const getUserRepos = async (username) => {
@@ -40,10 +31,6 @@ const App = () => {
 
     setRepos(res.data);
     setLoading(false);
-  }
-
-  const clearUsers = () => {
-    setUsers([]);
   }
 
   const showAlert = (msg, type) => {
@@ -70,11 +57,9 @@ const App = () => {
               <Route exact path="/" render={props => (
                 <Fragment>
                   <Search
-                    clearUsers={clearUsers}
-                    showClear={users.length > 0 ? true : false}
                     setAlert={showAlert}
                   />
-                  <Users loading={loading} users={users} />
+                  <Users />
                 </Fragment>
               )} />
               <Route exact path='/about' component={About} />
@@ -82,11 +67,9 @@ const App = () => {
                 props => (
                   <User
                     { ...props }
-                    getUser={ getUser }
-                    user={ user }
                     getUserRepos={getUserRepos}
                     repos={ repos }
-                    loading={ loading } />
+                  />
                 )}
               />
             </Switch>
